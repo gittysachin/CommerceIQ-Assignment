@@ -13,12 +13,14 @@ exports.getFulldata = async (req, res) => {
   // also supports filtering by query parameters
   const path = req.params["0"];
   const qparams = req.query;
-  // console.log(qparams)
 
   const subpaths = getSubpaths(path);
   const fullPathData = await dbService.getFullCategory(subpaths, qparams);
+
   if (fullPathData === null || fullPathData === undefined) {
-    return res.status(400).send({ error: "This path does not exist" });
+    return res.status(400).send({
+      error: "This path does not exist",
+    });
   }
 
   return res.status(200).send(fullPathData);
@@ -49,7 +51,6 @@ exports.createObject = async (req, res) => {
 
   const subpaths = getSubpaths(path);
 
-  console.log(subpaths);
   try {
     const createdObject = await dbService.newObject(subpaths, obj);
     return res

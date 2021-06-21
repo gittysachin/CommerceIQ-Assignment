@@ -160,25 +160,30 @@ exports.filterByQueryParams = async (data, params) => {
   if (!data || data.constructor != Array) {
     return data;
   }
+  Object.keys(params).forEach((key) => {
+    if (["views", "reviews", "likes", "id"].includes(key)) {
+      params[`${key}`] = parseInt(params[`${key}`]);
+    }
+  });
   return _.where(data, params);
 };
 
 exports.sortByQueryParams = async (data, sortby, orderby) => {
-  if (!orderby){
-    orderby = 'asc'
+  if (!orderby) {
+    orderby = "asc";
   }
 
   if (!data || data.constructor != Array || !sortby) {
-   return data
+    return data;
   }
 
-  data = _.sortBy(data, sortby)
-  if (orderby== 'dsc' || orderby == 'desc') {
-    data = data.reverse()
+  data = _.sortBy(data, sortby);
+  if (orderby == "dsc" || orderby == "desc") {
+    data = data.reverse();
   }
 
-  return data
-}
+  return data;
+};
 
 // Sorting -> use _
 
@@ -186,19 +191,17 @@ exports.getFullCategory = async (subpaths, params = {}) => {
   const allData = await this.readDB();
   const subDocument = await this.getSubDocumentAtPath(allData, subpaths);
 
-  sortby = params['_sort']
-  orderby = params['_order']
-  delete params['_sort']
-  delete params['_order']
+  sortby = params["_sort"];
+  orderby = params["_order"];
+  delete params["_sort"];
+  delete params["_order"];
 
   retData = await this.filterByQueryParams(subDocument, params);
   // use params dict
-  // console.log(retData)
-  retData = await this.sortByQueryParams(retData, sortby, orderby)
+  retData = await this.sortByQueryParams(retData, sortby, orderby);
   // call to sort method
   // console.log(retData)
   return retData;
-
 };
 
 exports.deleteObject = async (subpaths) => {
